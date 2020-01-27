@@ -1,0 +1,37 @@
+with
+
+tlc_yellow_trips AS (
+
+  SELECT * FROM {{ ref("base_new_york_taxi_trips__tlc_yellow_trips_2015") }}
+
+),
+
+filtered AS (
+
+  SELECT
+    *
+
+  FROM tlc_yellow_trips
+
+  WHERE pickup_longitude > -75
+    AND pickup_longitude < -73
+    AND dropoff_longitude > -75
+    AND dropoff_longitude < -73
+    AND pickup_latitude > 40
+    AND pickup_latitude < 42
+    AND dropoff_latitude > 40
+    AND dropoff_latitude < 42
+    AND passenger_count > 0
+    AND trip_distance > 0
+    AND fare_amount > 0
+    AND fare_amount < 500
+    AND extra_amount >= 0
+    AND mta_tax_amount >= 0
+    AND tip_amount >= 0
+    AND tolls_amount >= 0
+    AND imp_surcharge_amount >= 0
+    AND total_amount > 0
+
+)
+
+SELECT * FROM filtered
