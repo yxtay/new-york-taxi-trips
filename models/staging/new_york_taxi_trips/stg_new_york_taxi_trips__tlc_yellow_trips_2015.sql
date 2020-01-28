@@ -22,15 +22,18 @@ filtered AS (
     AND dropoff_latitude > 40
     AND dropoff_latitude < 42
     AND passenger_count > 0
+    AND passenger_count <= 6
     AND trip_distance > 0
     AND fare_amount > 0
-    AND fare_amount < 500
+    AND fare_amount <= 600
     AND extra_amount >= 0
     AND mta_tax_amount >= 0
     AND tip_amount >= 0
+    AND tip_amount <= 200
     AND tolls_amount >= 0
     AND imp_surcharge_amount >= 0
     AND total_amount > 0
+    AND total_amount <= 800
 
 )
 
