@@ -6,7 +6,7 @@ source AS (
 
 ),
 
-selected AS (
+renamed AS (
 
   SELECT
     pickup_datetime,
@@ -29,4 +29,4 @@ selected AS (
 
 )
 
-SELECT * FROM selected
+SELECT * FROM renamed

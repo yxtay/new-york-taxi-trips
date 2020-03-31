@@ -1,17 +1,16 @@
 with
 
-tlc_yellow_trips AS (
+source AS (
 
-  SELECT * FROM {{ ref("base_new_york_taxi_trips__tlc_yellow_trips_2015") }}
+  SELECT * FROM {{ ref("base_nytt__tlc_yellow_trips_2015") }}
 
 ),
 
 filtered AS (
 
-  SELECT
-    *
+  SELECT *
 
-  FROM tlc_yellow_trips
+  FROM source
 
   WHERE pickup_longitude > -75
     AND pickup_longitude < -73
