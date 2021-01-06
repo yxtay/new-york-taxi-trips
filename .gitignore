@@ -72,7 +72,7 @@ instance/
 docs/_build/
 
 # PyBuilder
-target/
+dbt/target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -133,6 +133,6 @@ dmypy.json
 .vscode
 
 # project
-target/
-dbt_modules/
-logs/
+dbt/target/
+dbt/dbt_modules/
+dbt/logs/

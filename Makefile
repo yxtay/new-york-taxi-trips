@@ -12,7 +12,7 @@ DATA_DIR=$(shell python -m src.config DATA_DIR)
 
 .PHONY: dbt-run
 dbt-run:
-	dbt run
+	dbt run --project-dir dbt --profiles-dir .
 
 .PHONY: bq-extract-raw
 bq-extract-raw:

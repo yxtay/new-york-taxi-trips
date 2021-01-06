@@ -37,9 +37,8 @@ COPY requirements/main.txt requirements.txt
 RUN python -m pip install --no-cache-dir -r requirements.txt && \
     python -m pip freeze
 
-COPY Makefile .
-COPY macros .
-COPY models .
+COPY Makefile Makefile
+COPY dbt dbt
 
 ARG ENVIRONMENT=prod
 ENV ENVIRONMENT $ENVIRONMENT
