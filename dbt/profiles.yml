@@ -4,7 +4,7 @@ new_york_taxi_trips:
     dev:
       type: bigquery
       method: oauth
-      project: default-223103
+      project:
       dataset: new_york_taxi_trips_dev
       threads: 8
       timeout_seconds: 300
@@ -13,7 +13,7 @@ new_york_taxi_trips:
     prod:
       type: bigquery
       method: service-account
-      project: default-223103
+      project:
       dataset: new_york_taxi_trips_prod
       keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
       threads: 8
