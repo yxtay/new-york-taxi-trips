@@ -1,0 +1,22 @@
+new_york_taxi_trips:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: default-223103
+      dataset: new_york_taxi_trips_dev
+      threads: 8
+      timeout_seconds: 300
+      priority: batch
+      retries: 5
+    prod:
+      type: bigquery
+      method: service-account
+      project: default-223103
+      dataset: new_york_taxi_trips_prod
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
+      threads: 8
+      timeout_seconds: 300
+      priority: batch
+      retries: 5

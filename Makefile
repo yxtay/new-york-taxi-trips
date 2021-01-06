@@ -1,23 +1,63 @@
-IMAGE_REGISTRY:=docker.io/yxtay
-APP_NAME=$(shell python -m src.config APP_NAME)
+MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules
+SHELL := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.ONESHELL:
+.DEFAULT_GOAL := all
+.DELETE_ON_ERROR:
+.SUFFIXES:
 
-ME:=Makefile
-DOCKER_FILE:=Dockerfile
+ENVIRONMENT ?= dev
+ARGS =
+GOOGLE_APPLICATION_CREDENTIALS ?=
+APP_NAME = $(shell python -m src.config app_name)
 
-GCP_PROJECT=$(shell python -m src.config GCP_PROJECT)
-GCS_BUCKET=$(shell python -m src.config GCS_BUCKET)
+GCP_PROJECT = $(shell python -m src.config gcp_project)
+GCS_BUCKET = $(shell python -m src.config gcs_bucket)
+BQ_DATASET = $(shell python -m src.config bq_dataset)
 
-DATA_DIR=$(shell python -m src.config DATA_DIR)
+DATA_DIR = $(shell python -m src.config data_dir)
 
+
+.PHONY: help
+help:  ## print help message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+## dependencies
+
+.PHONY: deps-install
+deps-install:  ## install dependencies
+	pip install poetry
+	poetry install --no-root
+
+.PHONY: deps-install-ci
+deps-install-ci:
+	pip install poetry
+	poetry config virtualenvs.create false
+	poetry install --no-root
+	poetry show
+
+.PHONY: deps-update
+deps-update:
+	poetry update
+	poetry export --format requirements.txt --output requirements.txt --without-hashes
+
+requirements.txt: poetry.lock
+	poetry export --format requirements.txt --output requirements.txt --without-hashes
+
+requirements-dev.txt: poetry.lock
+	poetry export --dev --format requirements.txt --output requirements-dev.txt --without-hashes
+
+## app
 
 .PHONY: dbt-run
-dbt-run:
-	dbt run --project-dir dbt --profiles-dir .
+dbt-run:  ## run dbt
+	dbt run --target $(ENVIRONMENT) --project-dir dbt --profiles-dir .
 
 .PHONY: bq-extract-raw
-bq-extract-raw:
+bq-extract-raw:  ## extract bq table to gcs
 	bq \
-	  --headless true \
+	  --headless \
 	  --project_id $(GCP_PROJECT) \
 	  extract \
 	  --destination_format CSV \
@@ -26,45 +66,6 @@ bq-extract-raw:
 	  gs://$(GCS_BUCKET)/$(APP_NAME)/$(DATA_DIR)/tlc_yellow_trips_2015/tlc_yellow_trips_2015_*.csv.gz
 
 .PHONY: dl-data
-dl-data:
+dl-data:  ## download data from gcs
 	mkdir -p $(DATA_DIR)
 	gsutil -m rsync -r gs://$(GCS_BUCKET)/$(APP_NAME)/$(DATA_DIR) $(DATA_DIR)
-
-.PHONY: update-requirements
-update-requirements:
-	pip install --upgrade pip setuptools pip-tools
-	pip-compile --upgrade --build-isolation --output-file requirements/main.txt requirements/main.in
-	pip-compile --upgrade --build-isolation --output-file requirements/dev.txt requirements/dev.in
-
-.PHONY: install-requirements
-install-requirements:
-	pip install -r requirements/main.txt -r requirements/dev.txt
-
-.PHONY: docker-build
-docker-build:
-	docker pull $(IMAGE_REGISTRY)/$(APP_NAME) || exit 0
-	docker build \
-	  --cache-from $(IMAGE_REGISTRY)/$(APP_NAME) \
-	  --tag $(IMAGE_REGISTRY)/$(APP_NAME):latest \
-	  --file $(DOCKER_FILE) .
-
-.PHONY: docker-push
-docker-push:
-	docker push $(IMAGE_REGISTRY)/$(APP_NAME):latest
-
-.PHONY: docker-run
-docker-run:
-	docker run --rm -it \
-	$(IMAGE_REGISTRY)/$(APP_NAME) \
-	$(ARGS)
-
-.PHONY: docker-exec
-docker-exec:
-	docker exec -it \
-	$(shell docker ps -q  --filter ancestor=$(IMAGE_REGISTRY)/$(APP_NAME)) \
-	/bin/bash
-
-.PHONY: docker-stop
-docker-stop:
-	docker stop \
-	$(shell docker ps -q  --filter ancestor=$(IMAGE_REGISTRY)/$(APP_NAME))

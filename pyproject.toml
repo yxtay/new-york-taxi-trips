@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "new-york-taxi-trips"
+version = "0.1.0"
+description = ""
+authors = ["yuxuan.tay <wyextay@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+dbt = "^0.18.1"
+pydantic = "^1.7.3"
+typer = "^0.3.2"
+
+[tool.poetry.dev-dependencies]
+bandit = "*"
+black = { version = "*", allow-prereleases = true }
+flake8 = "*"
+isort = "*"
+jupyterlab = "*"
+mypy = "*"
+poetry = "*"
+pre-commit = "*"
+pytest = "*"
+pytest-cov = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
