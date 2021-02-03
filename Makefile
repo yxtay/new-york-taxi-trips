@@ -18,6 +18,8 @@ BQ_DATASET = $(shell python -m src.config bq_dataset)
 
 DATA_DIR = $(shell python -m src.config data_dir)
 
+DBT_ARGS = --target $(ENVIRONMENT) --project-dir dbt --profiles-dir .
+
 
 .PHONY: help
 help:  ## print help message
@@ -52,7 +54,15 @@ requirements-dev.txt: poetry.lock
 
 .PHONY: dbt-run
 dbt-run:  ## run dbt
-	dbt run --target $(ENVIRONMENT) --project-dir dbt --profiles-dir .
+	dbt run $(DBT_ARGS)
+
+.PHONY: dbt-docs-generate
+dbt-docs-generate:  ## generate dbt docs
+	dbt docs generate $(DBT_ARGS)
+
+.PHONY: dbt-docs-serve
+dbt-docs-serve:  ## serve dbt docs
+	dbt docs serve $(DBT_ARGS)
 
 .PHONY: bq-extract-raw
 bq-extract-raw:  ## extract bq table to gcs

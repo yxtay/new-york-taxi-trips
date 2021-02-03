@@ -133,6 +133,5 @@ dmypy.json
 .vscode
 
 # project
-dbt/target/
-dbt/dbt_modules/
-dbt/logs/
+data/
+secrets/
