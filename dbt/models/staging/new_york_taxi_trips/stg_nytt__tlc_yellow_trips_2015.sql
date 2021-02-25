@@ -1,39 +1,39 @@
 with
 
-source AS (
+source as (
 
-  SELECT * FROM {{ ref("base_nytt__tlc_yellow_trips_2015") }}
+  select * from {{ ref("base_nytt__tlc_yellow_trips_2015") }}
 
 ),
 
-filtered AS (
+filtered as (
 
-  SELECT *
+  select *
 
-  FROM source
+  from source
 
-  WHERE pickup_longitude > -75
-    AND pickup_longitude < -73
-    AND dropoff_longitude > -75
-    AND dropoff_longitude < -73
-    AND pickup_latitude > 40
-    AND pickup_latitude < 42
-    AND dropoff_latitude > 40
-    AND dropoff_latitude < 42
-    AND passenger_count > 0
-    AND passenger_count <= 6
-    AND trip_distance > 0
-    AND fare_amount > 0
-    AND fare_amount <= 600
-    AND extra_amount >= 0
-    AND mta_tax_amount >= 0
-    AND tip_amount >= 0
-    AND tip_amount <= 200
-    AND tolls_amount >= 0
-    AND imp_surcharge_amount >= 0
-    AND total_amount > 0
-    AND total_amount <= 800
+  where pickup_longitude > -75
+    and pickup_longitude < -73
+    and dropoff_longitude > -75
+    and dropoff_longitude < -73
+    and pickup_latitude > 40
+    and pickup_latitude < 42
+    and dropoff_latitude > 40
+    and dropoff_latitude < 42
+    and passenger_count > 0
+    and passenger_count <= 6
+    and trip_distance > 0
+    and fare_amount > 0
+    and fare_amount <= 600
+    and extra_amount >= 0
+    and mta_tax_amount >= 0
+    and tip_amount >= 0
+    and tip_amount <= 200
+    and tolls_amount >= 0
+    and imp_surcharge_amount >= 0
+    and total_amount > 0
+    and total_amount <= 800
 
 )
 
-SELECT * FROM filtered
+select * from filtered

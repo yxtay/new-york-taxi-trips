@@ -1,14 +1,14 @@
 with
 
-source AS (
+source as (
 
-  SELECT * FROM {{ source("new_york_taxi_trips", "tlc_yellow_trips_2015") }}
+  select * from {{ source("new_york_taxi_trips", "tlc_yellow_trips_2015") }}
 
 ),
 
-renamed AS (
+renamed as (
 
-  SELECT
+  select
     pickup_datetime,
     pickup_longitude,
     pickup_latitude,
@@ -18,15 +18,15 @@ renamed AS (
     passenger_count,
     trip_distance,
     fare_amount,
-    extra AS extra_amount,
-    mta_tax AS mta_tax_amount,
+    extra as extra_amount,
+    mta_tax as mta_tax_amount,
     tip_amount,
     tolls_amount,
-    imp_surcharge AS imp_surcharge_amount,
+    imp_surcharge as imp_surcharge_amount,
     total_amount
 
-  FROM source
+  from source
 
 )
 
-SELECT * FROM renamed
+select * from renamed
